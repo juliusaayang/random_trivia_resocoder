@@ -1,55 +1,55 @@
 import 'package:dartz/dartz.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/domain/entities/number_trivia_entity.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/domain/usecases/get_concreate_number_trivia_usecase.dart';
 
-class MockNumberTriviaRepository extends Mock
-    implements NumberTriviaRepository {}
+import 'get_concrete_number_trivia_usecase_test.mocks.dart';
 
+@GenerateMocks([GetConcreteNumberTriviaUsecase, NumberTriviaRepository])
 void main() {
-  GetConcreteNumberTriviaUsecase? usecase;
-  MockNumberTriviaRepository? mockNumberTriviaRepository;
+  late GetConcreteNumberTriviaUsecase getConcreteNumberTriviaUsecase;
+  late MockNumberTriviaRepository mockNumberTriviaRepository;
+  late NumberTriviaEntity numberTriviaEntity;
 
-  setUp(() {
+  setUp(() async {
     mockNumberTriviaRepository = MockNumberTriviaRepository();
-    usecase = GetConcreteNumberTriviaUsecase(
-      numberTriviaRepository: mockNumberTriviaRepository!,
+    getConcreteNumberTriviaUsecase = GetConcreteNumberTriviaUsecase(
+      numberTriviaRepository: mockNumberTriviaRepository,
+    );
+
+    numberTriviaEntity = NumberTriviaEntity(
+      text: 'test',
+      number: 2,
     );
   });
 
-  final tNumber = 3;
-  final tNumberTrivia = NumberTriviaEntity(
-    text: 'test',
-    number: tNumber,
-  );
 
   test(
     'should get trivia for the number from the repository',
     () async {
       // arrange
-      when(mockNumberTriviaRepository!.getConcreteNumberTrivia(
-        number: 5,
-      )).thenAnswer(
-        (realInvocation) async => Right(
-          tNumberTrivia,
+      when(mockNumberTriviaRepository.getConcreteNumberTrivia(any)).thenAnswer(
+        (_) async => Right(
+          numberTriviaEntity,
         ),
       );
 
       // act
-      final result = await usecase!.call(
-        number: tNumber,
+      final result = await getConcreteNumberTriviaUsecase(
+        GetConcreteNumberTriviaParams(number: 1)
       );
 
       // assert
       expect(
         result,
-        Right(tNumberTrivia),
+        Right(numberTriviaEntity),
       );
 
       verify(
-        mockNumberTriviaRepository!.getConcreteNumberTrivia(number: tNumber),
+        mockNumberTriviaRepository.getConcreteNumberTrivia(any),
       );
 
       verifyNoMoreInteractions(mockNumberTriviaRepository);
