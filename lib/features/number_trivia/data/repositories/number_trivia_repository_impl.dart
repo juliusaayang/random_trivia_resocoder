@@ -1,5 +1,5 @@
 import 'package:random_trivia_resocoder/core/error/exceptions.dart';
-import 'package:random_trivia_resocoder/core/platform/network_info.dart';
+import 'package:random_trivia_resocoder/core/network/network_info.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/data/datasources/number_trivia_local_datasource.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/data/datasources/number_trivia_remote_datasource.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/data/models/number_trivia_model.dart';
