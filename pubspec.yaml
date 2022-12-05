@@ -8,7 +8,6 @@ environment:
 
 dependencies:
   dartz: ^0.10.1
-  data_connection_checker: ^0.3.4
   equatable: ^2.0.5
   flutter:
     sdk: flutter
