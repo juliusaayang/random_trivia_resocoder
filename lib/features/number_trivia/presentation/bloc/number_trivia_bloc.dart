@@ -45,10 +45,12 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
         },
       );
     } else if (event is GetRandomNumberTriviaEvent) {
+      print('d');
       yield LoadingState();
       final res = await getRandomNumberTriviaUsecase(
         NoParams(),
       );
+      print(res);
       yield* _eitherErrorOrLoaded(res);
     }
   }

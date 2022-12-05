@@ -3,6 +3,7 @@ import 'package:random_trivia_resocoder/features/number_trivia/presentation/page
 import 'package:random_trivia_resocoder/injection_container.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await init();
   runApp(const MyApp());
 }

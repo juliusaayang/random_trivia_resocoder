@@ -1,5 +1,5 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:random_trivia_resocoder/core/network/network_info.dart';
 import 'package:random_trivia_resocoder/core/utils/input_converter.dart';
 import 'package:random_trivia_resocoder/features/number_trivia/data/datasources/number_trivia_remote_datasource.dart';
@@ -61,6 +61,6 @@ Future<void> init() async {
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => DataConnectionChecker());
+  sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton(() => http.Client());
 }
