@@ -13,7 +13,9 @@ class LoadingState extends NumberTriviaState {}
 
 class Loadedstate extends NumberTriviaState {
   final NumberTriviaEntity numberTriviaEntity;
-  const Loadedstate({required this.numberTriviaEntity});
+  const Loadedstate({
+    required this.numberTriviaEntity,
+  });
 }
 
 class ErrorState extends NumberTriviaState {

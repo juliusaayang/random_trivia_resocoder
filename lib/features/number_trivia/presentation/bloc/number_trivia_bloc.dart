@@ -21,13 +21,16 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     required this.getRandomNumberTriviaUsecase,
     required this.inputConverter,
   }) : super(EmptyState()) {
-    on<NumberTriviaEvent>(mapEventToState);
+    on<NumberTriviaEvent>(
+      ((event, emit) => trivia(event, emit)),
+    );
   }
 
-  Stream<NumberTriviaState> mapEventToState(
+  Stream<NumberTriviaState> trivia(
     NumberTriviaEvent event,
     Emitter<NumberTriviaState> emit,
   ) async* {
+    print(event);
     if (event is GetConcreteNumberTriviaEvent) {
       final inputEither =
           inputConverter.stringToUnassignedInteger(event.numberString);
