@@ -65,10 +65,10 @@ class _TriviaControllsState extends State<TriviaControlls> {
   }
 
   void dispatchConcrete() async {
-    _controller.clear();
     BlocProvider.of<NumberTriviaBloc>(context).add(
       await GetConcreteNumberTriviaEvent(_controller.text.trim()),
     );
+    // _controller.clear();
   }
 
   void dispatchRandom() async {

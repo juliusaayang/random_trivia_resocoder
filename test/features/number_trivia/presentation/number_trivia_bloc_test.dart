@@ -50,7 +50,7 @@ void main() {
 
       test(
         'should call the input conveter to convert and validate string',
-        () async* {
+        () async {
           // arrange
           mockInputCoverterSuccess();
           // act
@@ -63,7 +63,7 @@ void main() {
 
       test(
         'should emit [Error] when the input is invalid',
-        () async* {
+        () async {
           // arrange
           when(mockInputConverter.stringToUnassignedInteger(any)).thenReturn(
             Left(
@@ -85,7 +85,7 @@ void main() {
 
       test(
         'should get from the data [GetConcreteNumberTriviaUsecase] class',
-        () async* {
+        () async {
           // arrange
           mockInputCoverterSuccess();
           when(mockGetConcreteNumberTriviaUsecase(any)).thenAnswer(
@@ -111,7 +111,7 @@ void main() {
 
       test(
         'should emit [Loading, Loaded] state, when data is gotten successfully',
-        () async* {
+        () async {
           // arrange
           mockInputCoverterSuccess();
           when(mockGetConcreteNumberTriviaUsecase(any)).thenAnswer(
@@ -135,7 +135,7 @@ void main() {
 
       test(
         'should emit [Loading, Error] state, when getting data failed',
-        () async* {
+        () async {
           // arrange
           mockInputCoverterSuccess();
           when(mockGetConcreteNumberTriviaUsecase(any)).thenAnswer(
@@ -159,7 +159,7 @@ void main() {
 
       test(
         'should emit [Loading, Error] state, with a proper message for the erro when getting dat fails',
-        () async* {
+        () async {
           // arrange
           mockInputCoverterSuccess();
           when(mockGetConcreteNumberTriviaUsecase(any)).thenAnswer(
@@ -195,7 +195,7 @@ void main() {
      
       test(
         'should get from the data [GetRandomNumberTriviaUsecase] class',
-        () async* {
+        () async {
           // arrange
           when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
             (realInvocation) => Future.value(
@@ -218,7 +218,7 @@ void main() {
 
       test(
         'should emit [Loading, Loaded] state, when data is gotten successfully',
-        () async* {
+        () async {
           // arrange
           when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
             (realInvocation) => Future.value(
@@ -241,7 +241,7 @@ void main() {
 
       test(
         'should emit [Loading, Error] state, when getting data failed',
-        () async* {
+        () async {
           // arrange
           when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
             (realInvocation) => Future.value(
@@ -264,7 +264,7 @@ void main() {
 
       test(
         'should emit [Loading, Error] state, with a proper message for the erro when getting dat fails',
-        () async* {
+        () async {
           // arrange
           when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
             (realInvocation) => Future.value(

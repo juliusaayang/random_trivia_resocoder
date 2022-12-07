@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -22,47 +24,55 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     required this.inputConverter,
   }) : super(EmptyState()) {
     on<NumberTriviaEvent>(
-      ((event, emit) => trivia(event, emit)),
+      ((event, emit) async {
+        await trivia(event, emit);
+      }),
     );
   }
 
-  Stream<NumberTriviaState> trivia(
+  Future<void> trivia(
     NumberTriviaEvent event,
     Emitter<NumberTriviaState> emit,
-  ) async* {
-    print(event);
+  ) async {
     if (event is GetConcreteNumberTriviaEvent) {
+      emit(LoadingState());
       final inputEither =
-          inputConverter.stringToUnassignedInteger(event.numberString);
+          await inputConverter.stringToUnassignedInteger(event.numberString);
 
-      yield* inputEither.fold(
-        (l) async* {
-          yield ErrorState(INVALID_INPUT_FAILURE_MESSAGE);
+      inputEither.fold(
+        (l) {
+          emit(ErrorState(INVALID_INPUT_FAILURE_MESSAGE));
         },
-        (r) async* {
-          yield LoadingState();
+        (r) async {
+          print(r);
+
           final res = await getConcreteNumberTriviaUsecase(
             GetConcreteNumberTriviaParams(number: r),
           );
-          yield* _eitherErrorOrLoaded(res);
+          print(res);
+          _eitherErrorOrLoaded(res, emit);
         },
       );
     } else if (event is GetRandomNumberTriviaEvent) {
-      print('d');
-      yield LoadingState();
+      emit(LoadingState());
       final res = await getRandomNumberTriviaUsecase(
         NoParams(),
       );
-      print(res);
-      yield* _eitherErrorOrLoaded(res);
+      _eitherErrorOrLoaded(res, emit);
     }
   }
 
-  Stream<NumberTriviaState> _eitherErrorOrLoaded(
-      Either<Failure, NumberTriviaEntity> res) async* {
-    yield res.fold(
-      (l) => ErrorState(_mapFailureToMessage(l)),
-      (r) => Loadedstate(numberTriviaEntity: r),
+  void _eitherErrorOrLoaded(
+    Either<Failure, NumberTriviaEntity> res,
+    Emitter<NumberTriviaState> emit,
+  ) async {
+    res.fold(
+      (l) => emit(
+        ErrorState(_mapFailureToMessage(l)),
+      ),
+      (r) => emit(
+        Loadedstate(numberTriviaEntity: r),
+      ),
     );
   }
 
