@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
@@ -24,32 +25,29 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     required this.inputConverter,
   }) : super(EmptyState()) {
     on<NumberTriviaEvent>(
-      ((event, emit) async {
+      (event, emit) async {
         await trivia(event, emit);
-      }),
+      },
     );
   }
 
-  Future<void> trivia(
+  FutureOr<void> trivia(
     NumberTriviaEvent event,
     Emitter<NumberTriviaState> emit,
   ) async {
     if (event is GetConcreteNumberTriviaEvent) {
-      emit(LoadingState());
       final inputEither =
-          await inputConverter.stringToUnassignedInteger(event.numberString);
+          inputConverter.stringToUnassignedInteger(event.numberString);
 
-      inputEither.fold(
+      await inputEither.fold(
         (l) {
           emit(ErrorState(INVALID_INPUT_FAILURE_MESSAGE));
         },
         (r) async {
-          print(r);
-
+          emit(LoadingState());
           final res = await getConcreteNumberTriviaUsecase(
             GetConcreteNumberTriviaParams(number: r),
           );
-          print(res);
           _eitherErrorOrLoaded(res, emit);
         },
       );
@@ -62,11 +60,11 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     }
   }
 
-  void _eitherErrorOrLoaded(
+  _eitherErrorOrLoaded(
     Either<Failure, NumberTriviaEntity> res,
     Emitter<NumberTriviaState> emit,
   ) async {
-    res.fold(
+    return res.fold(
       (l) => emit(
         ErrorState(_mapFailureToMessage(l)),
       ),
