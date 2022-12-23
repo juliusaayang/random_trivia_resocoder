@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -59,6 +60,24 @@ void main() {
           // assert
           verify(mockInputConverter.stringToUnassignedInteger(tNumberString));
         },
+      );
+
+      // thissssss
+
+      blocTest<NumberTriviaBloc, NumberTriviaState>(
+        'should call the input converter and validate string',
+        build: () => numberTriviaBloc,
+        setUp: () {
+          mockInputCoverterSuccess();
+          // when(mockInputConverter.stringToUnassignedInteger(any));
+        },
+        act: (bloc) async {
+          await mockInputConverter.stringToUnassignedInteger(tNumberString);
+          bloc.add(GetConcreteNumberTriviaEvent(tNumberString));
+          // await untilCalled(mockInputConverter.stringToUnassignedInteger(any));
+        },
+        verify: (bloc) =>
+            mockInputConverter.stringToUnassignedInteger(tNumberString),
       );
 
       test(
@@ -180,11 +199,10 @@ void main() {
           numberTriviaBloc.add(GetConcreteNumberTriviaEvent(tNumberString));
         },
       );
-      
     },
   );
 
-   group(
+  group(
     'GetRandomNumberTrivia',
     () {
       final tNumberTriviaEntity = NumberTriviaEntity(
@@ -192,99 +210,74 @@ void main() {
         number: 1,
       );
 
-     
-      test(
-        'should get from the data [GetRandomNumberTriviaUsecase] class',
-        () async {
-          // arrange
-          when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
-            (realInvocation) => Future.value(
-              Right(tNumberTriviaEntity),
-            ),
-          );
-
-          // act
-          numberTriviaBloc.add(GetRandomNumberTriviaEvent());
-          await untilCalled(mockGetRandomNumberTriviaUsecase(any));
-
-          // assert
-          verify(
-            numberTriviaBloc.getRandomNumberTriviaUsecase.call(
-              NoParams(),
-            ),
-          );
-        },
+      blocTest<NumberTriviaBloc, NumberTriviaState>(
+        'should get the data [GetRandomTriviaUsecase] class',
+        build: () => numberTriviaBloc,
+        setUp: () => when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
+          (realInvocation) => Future.value(
+            Right(tNumberTriviaEntity),
+          ),
+        ),
+        act: (bloc) => bloc.add(GetRandomNumberTriviaEvent()),
+        verify: (bloc) => bloc.getRandomNumberTriviaUsecase(NoParams()),
       );
 
-      test(
+      blocTest<NumberTriviaBloc, NumberTriviaState>(
+        'should get the data [GetRandomTriviaUsecase] class',
+        build: () => numberTriviaBloc,
+        setUp: () => when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
+          (realInvocation) => Future.value(
+            Right(tNumberTriviaEntity),
+          ),
+        ),
+        act: (bloc) => bloc.add(GetRandomNumberTriviaEvent()),
+        verify: (bloc) => bloc.getRandomNumberTriviaUsecase(NoParams()),
+      );
+
+      blocTest<NumberTriviaBloc, NumberTriviaState>(
         'should emit [Loading, Loaded] state, when data is gotten successfully',
-        () async {
-          // arrange
-          when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
-            (realInvocation) => Future.value(
-              Right(tNumberTriviaEntity),
-            ),
-          );
-
-          // assert later
-          final expectedStates = [
-            EmptyState(),
-            LoadingState(),
-            Loadedstate(numberTriviaEntity: tNumberTriviaEntity),
-          ];
-          expectLater(numberTriviaBloc.state, emitsInOrder(expectedStates));
-
-          // act
-          numberTriviaBloc.add(GetRandomNumberTriviaEvent());
-        },
+        build: () => numberTriviaBloc,
+        setUp: () => when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
+          (realInvocation) => Future.value(
+            Right(tNumberTriviaEntity),
+          ),
+        ),
+        act: (bloc) => bloc.add(GetRandomNumberTriviaEvent()),
+        expect: () => <NumberTriviaState>[
+          LoadingState(),
+          Loadedstate(numberTriviaEntity: tNumberTriviaEntity),
+        ],
       );
 
-      test(
+      blocTest<NumberTriviaBloc, NumberTriviaState>(
         'should emit [Loading, Error] state, when getting data failed',
-        () async {
-          // arrange
-          when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
-            (realInvocation) => Future.value(
-              Left(ServerFailure()),
-            ),
-          );
-
-          // assert later
-          final expectedStates = [
-            EmptyState(),
-            LoadingState(),
-            ErrorState(SERVER_FAILURE_MESSAGE),
-          ];
-          expectLater(numberTriviaBloc.state, emitsInOrder(expectedStates));
-
-          // act
-          numberTriviaBloc.add(GetRandomNumberTriviaEvent());
-        },
+        build: () => numberTriviaBloc,
+        setUp: () => when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
+          (realInvocation) => Future.value(
+            Left(CacheFailure()),
+          ),
+        ),
+        act: (bloc) => bloc.add(GetRandomNumberTriviaEvent()),
+        expect: () => [
+          LoadingState(),
+          ErrorState(SERVER_FAILURE_MESSAGE),
+        ],
       );
 
-      test(
+      blocTest<NumberTriviaBloc, NumberTriviaState>(
         'should emit [Loading, Error] state, with a proper message for the erro when getting dat fails',
-        () async {
-          // arrange
-          when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
-            (realInvocation) => Future.value(
-              Left(CacheFailure()),
-            ),
-          );
-
-          // assert later
-          final expectedStates = [
-            EmptyState(),
-            LoadingState(),
-            ErrorState(CACHE_FAILURE_MESSAGE),
-          ];
-          expectLater(numberTriviaBloc.state, emitsInOrder(expectedStates));
-
-          // act
-          numberTriviaBloc.add(GetRandomNumberTriviaEvent());
-        },
+        build: () => numberTriviaBloc,
+        setUp: () => when(mockGetRandomNumberTriviaUsecase(any)).thenAnswer(
+          (realInvocation) => Future.value(
+            Left(CacheFailure()),
+          ),
+        ),
+        act: (bloc) => bloc.add(GetRandomNumberTriviaEvent()),
+        expect: () => [
+          LoadingState(),
+          ErrorState(CACHE_FAILURE_MESSAGE),
+        ],
       );
-      
     },
   );
 }
